@@ -47,16 +47,13 @@ async def run(pc, videoShow: VideoShow, signaling):
     offer = await pc.createOffer()
     await pc.setLocalDescription(offer)
     response = await signaling.postOffer(pc.localDescription)
-
-    # consume signaling
-    while True:
-        if isinstance(response, RTCSessionDescription):
-            await pc.setRemoteDescription(response)
-        elif response is BYE:
-            print("Exiting")
-            break
-        await asyncio.sleep(10000000)
-        response = None
+    await pc.setRemoteDescription(response)
+    try:
+        while True:
+            await asyncio.sleep(100)
+    except (KeyboardInterrupt):
+        print("Closing Connection")
+        pc.close()
 
 
 if __name__ == "__main__":
