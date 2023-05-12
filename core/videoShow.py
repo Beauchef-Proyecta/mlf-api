@@ -1,4 +1,8 @@
 import cv2
+from mlfApi import process
+
+
+#import process from tarea1
 class VideoShow():
 
     def __init__(self) -> None:
@@ -17,6 +21,8 @@ class VideoShow():
             if frame:
                 # Display the resulting frame
                 frame = frame.to_ndarray(format="bgr24")
+                frame = process(frame)
+
                 cv2.imshow('Video', frame)
                 # Press Q on keyboard to  exit
                 if cv2.waitKey(25) & 0xFF == ord('q'):

@@ -32,7 +32,6 @@ async def run(pc, videoShow: VideoShow, signaling):
 
     @pc.on("track")
     async def on_track(track):
-        print("hola")
         print("Receiving %s" % track.kind)
         if track.kind == 'video':
             await videoShow.addTrack(SimpleVideoTrack(track))
@@ -53,9 +52,7 @@ async def run(pc, videoShow: VideoShow, signaling):
         print("Closing Connection")
         pc.close()
 
-
-if __name__ == "__main__":
-
+def main():
     # create signaling and peer connection
     signaling = SignalingServer()
     pc = RTCPeerConnection(configuration=RTCConfiguration(iceServers=[]))
@@ -77,3 +74,7 @@ if __name__ == "__main__":
     finally:
         # cleanup
         loop.run_until_complete(pc.close())
+
+
+if __name__ == "__main__":
+   main()
