@@ -4,7 +4,7 @@ import json
 
 class SignalingServer():
     def __init__(self) -> None:
-        self.url = 'http://127.0.0.1:8080/offer' #Url de hos
+        self.url = 'http://192.168.0.100:8080/offer' #Url de hos
     
     async def postOffer(self, localDescription):
         print(localDescription)
