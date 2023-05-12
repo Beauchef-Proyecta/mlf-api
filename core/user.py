@@ -1,8 +1,6 @@
 import asyncio
 from aiortc import (
     RTCPeerConnection,
-    RTCSessionDescription,
-    VideoStreamTrack,
     RTCConfiguration
 )
 from videoShow import VideoShow
@@ -43,7 +41,7 @@ async def run(pc, videoShow: VideoShow, signaling):
 
         
     # send offer
-    pc.addTrack(VideoStreamTrack())
+    pc.addTransceiver('video', direction = 'recvonly')
     offer = await pc.createOffer()
     await pc.setLocalDescription(offer)
     response = await signaling.postOffer(pc.localDescription)
