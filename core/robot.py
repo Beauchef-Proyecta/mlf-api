@@ -7,7 +7,7 @@ class RobotClient:
     HOME_Q1 = 0
     HOME_Q2 = 90
 
-    def __init__(self, address, port=8080):
+    def __init__(self, address, port=5000):
         self.address = address
         self.port = port
         self.base_url = f"http://{address}:{port}"
