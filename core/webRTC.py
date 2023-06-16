@@ -19,6 +19,7 @@ class WebRTCController():
         self.signaling = SignalingServer(address)
         self.cond = threading.Condition()
         self.videoBuffer = VideoBuffer(self.cond)
+        self.connected = False
 
     def webRTCRecv(self):
         # run event loop
@@ -38,12 +39,16 @@ class WebRTCController():
             self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
             self.recvThread.start()
             self.cond.wait()
+        self.connected = True
+        print("WebRTC connection finished")
 
     def close(self):
         self.__running = False
         self.recvThread.join()
 
     def getFrame(self):
+        if not self.connected:
+            self.connect()
         return self.videoBuffer.getCurrentFrame()
         
         

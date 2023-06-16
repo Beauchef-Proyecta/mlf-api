@@ -14,7 +14,7 @@ class RobotClient:
         self.port = port
         self.base_url = f"http://{address}:{port}"
         self.connected = False
-        self.webRTCConnect = False
+        self.webRTCUser = WebRTCController(self.address)
 
     def connect(self):
         if self.connected:
@@ -41,24 +41,18 @@ class RobotClient:
         print(response.text)
     
     def connectWebRTC(self):
-        self.webRTCUser = WebRTCController(self.address)
         self.webRTCUser.connect()
-        self.webRTCConnect = True
 
     def closeWebRTC(self):
         self.webRTCUser.close()
         #self.videoShow.stop()
 
     def showVideo(self):
-        if not self.webRTCConnect:
-            self.connectWebRTC()
         self.videoShow = VideoShow(self.webRTCUser.videoBuffer)
         self.videoShow.start()
     
 
     def get_frame(self):
-        if not self.webRTCConnect:
-            self.connectWebRTC()
         return self.webRTCUser.getFrame()
         
     def home(self):
