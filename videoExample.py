@@ -3,8 +3,7 @@ import time
 
 robot = RobotClient("rainbowdash.local")
 
-robot.get_frame()
-robot.showVideo()
-
-time.sleep(10)
+frame = robot.get_frame()
+print(frame)
+time.sleep(3)
 robot.closeWebRTC()

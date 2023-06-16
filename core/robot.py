@@ -1,5 +1,5 @@
 import requests
-from .user import WebRTCUser
+from .webRTC import WebRTCController
 from .videoShow import VideoShow
 
 
@@ -40,14 +40,14 @@ class RobotClient:
         response = requests.get(url, params=params)
         print(response.text)
     
-    def __connectWebRTC(self):
-        self.webRTCUser = WebRTCUser(self.address)
-        self.webRTCUser.start()
+    def connectWebRTC(self):
+        self.webRTCUser = WebRTCController(self.address)
+        self.webRTCUser.connect()
         self.webRTCConnect = True
 
     def closeWebRTC(self):
         self.webRTCUser.close()
-        self.videoShow.stop()
+        #self.videoShow.stop()
 
     def showVideo(self):
         if not self.webRTCConnect:
@@ -59,7 +59,7 @@ class RobotClient:
     def get_frame(self):
         if not self.webRTCConnect:
             self.__connectWebRTC()
-        return self.webRTCUser.videoBuffer.getCurrentFrame()
+        return self.webRTCUser.getFrame()
         
     def home(self):
         self.set_joints(q0=self.HOME_Q0, q1=self.HOME_Q1, q2=self.HOME_Q2)
