@@ -1,6 +1,6 @@
 import requests
-from .user import WebRTCUser
-from .videoShow import VideoShow
+from user import WebRTCUser
+from videoShow import VideoShow
 
 
 class RobotClient:
@@ -34,12 +34,30 @@ class RobotClient:
         print(response.text)
         
 
-    def set_joints(self, q0=0, q1=0, q2=90):
+    def set_joints(self, q0=0, q1=0, q2=90, q3=120):
         params = {"q0": q0, "q1": q1, "q2": q2}
         url = f"{self.base_url}/set_joints"
         response = requests.get(url, params=params)
         print(response.text)
+
+    def set_relay_status(self, state=1, relay=1):
+        params = {"state": state, "n_relay": relay}
+        url = f"{self.base_url}/set_relay_status"
+        response = requests.get(url, params=params)
+        print(response.text)
     
+    def set_extra_servo(self, q=0):
+        params = {"q": q}
+        url = f"{self.base_url}/set_extra_servo"
+        response = requests.get(url, params=params)
+        print(response.text)
+
+    def set_gripper_servo(self, q=120):
+        params = {"q": q}
+        url = f"{self.base_url}/set_gripper_servo"
+        response = requests.get(url, params=params)
+        print(response.text)
+
     def __connectWebRTC(self):
         self.webRTCUser = WebRTCUser(self.address)
         self.webRTCUser.start()
