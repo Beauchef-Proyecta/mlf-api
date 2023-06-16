@@ -1,11 +1,11 @@
 import aiohttp
 from aiortc import RTCSessionDescription
 import json
-from mlfApi import PORT, IP
+import asyncio
 
 class SignalingServer():
-    def __init__(self) -> None:
-        self.url = f'http://{IP}:{PORT}/offer' #Url de hos
+    def __init__(self, address, port= 8080) -> None:
+        self.url = f'http://{address}:{port}/offer' #Url de host
     
     async def postOffer(self, localDescription) -> RTCSessionDescription:
         async with aiohttp.ClientSession(headers={'Content-Type': 'application/json'}, trust_env=True) as session:

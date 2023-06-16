@@ -4,34 +4,44 @@ from aiortc import (
     RTCConfiguration
 )
 import logging
-from videoShow import VideoShow, VideoBuffer
-from signaling import SignalingServer
+from .videoShow import VideoShow, VideoBuffer
+from .signaling import SignalingServer
 from aiortc.contrib.media import MediaStreamTrack
 from aiortc.contrib.signaling import BYE, add_signaling_arguments, create_signaling
 from av import VideoFrame
+import threading
 
 
 
-class WebRTCuser():
-    def __init__(self) -> None:
+class WebRTCUser():
+    def __init__(self,address) -> None:
         # create signaling and peer connection
-        self.signaling = SignalingServer()
-        self.pc = RTCPeerConnection(configuration=RTCConfiguration(iceServers=[]))
+        self.signaling = SignalingServer(address)
+        
         self.videoBuffer = VideoBuffer()
 
-    def start(self):
+    def webRTCRecv(self):
         # run event loop
-        loop = asyncio.get_event_loop()
-        try:
-            loop.run_until_complete(
-                self.run()
-            )
-        except KeyboardInterrupt:
-            pass
-        finally:
-            # cleanup
-            self.videoBuffer.stop()
-            loop.run_until_complete(self.pc.close())
+        self.pc = RTCPeerConnection(configuration=RTCConfiguration(iceServers=[]))
+        self.__running = True
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_until_complete(self.run())
+
+        print("Stop webRTC")
+        self.videoBuffer.stop()
+        self.loop.run_until_complete(self.pc.close())
+        
+
+    def start(self):
+        self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
+        self.recvThread.start()
+
+    def close(self):
+        self.__running = False
+        self.recvThread.join()
+        
+        
     
     async def run(self):
 
@@ -41,9 +51,7 @@ class WebRTCuser():
             if track.kind == 'video':
                 await self.videoBuffer.addTrack(SimpleVideoTrack(track))
                 if (not self.videoBuffer.started):
-                    print("initialized")
-                    await self.videoBuffer.start(showVideo=True)
-                    print("initialized")
+                    await self.videoBuffer.start()
 
             
         # send offer
@@ -52,12 +60,9 @@ class WebRTCuser():
         await self.pc.setLocalDescription(offer)
         response = await self.signaling.postOffer(self.pc.localDescription)
         await self.pc.setRemoteDescription(response)
-        try:
-            while True:
-                await asyncio.sleep(100)
-        except (KeyboardInterrupt):
-            print("Closing Connection")
-            self.pc.close()
+        print("WebRTC ready")
+        while self.__running:
+            await asyncio.sleep(1)
 
 
 class SimpleVideoTrack(MediaStreamTrack):
@@ -77,5 +82,5 @@ class SimpleVideoTrack(MediaStreamTrack):
 
 if __name__ == "__main__":
     #logging.basicConfig(level=logging.DEBUG)
-    user = WebRTCuser()
+    user = WebRTCUser("rainbowdash.local")
     user.start()

@@ -1,5 +1,5 @@
 import cv2
-from mlfApi import process
+from .mlfApi import process
 import threading
 import time
 
@@ -12,14 +12,10 @@ class VideoBuffer():
     async def addTrack(self, track):
         self.track = track
 
-    async def start(self, showVideo= False):
+    async def start(self):
         self.started = True
-        if showVideo:
-            self.videoShow = VideoShow(self)
-            self.videoShow.start()
         while (self.started):
             self.frame = await self.track.recv()
-        self.showVideo.stop()
     
     def stop(self):
         self.started = False
@@ -35,7 +31,6 @@ class VideoShow():
     def showLoop(self):
         # Read until video is completed
         self.show = True
-        time.sleep(1)
         while (self.show):
             # Capture frame-by-frame
             frame = self.buffer.getCurrentFrame()
