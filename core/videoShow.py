@@ -1,5 +1,4 @@
 import cv2
-from .mlfApi import process
 import threading
 import time
 
@@ -37,7 +36,6 @@ class VideoShow():
             if frame:
                 # Display the resulting frame
                 frame = frame.to_ndarray(format="bgr24")
-                frame = process(frame)
                 cv2.imshow('Video', frame)
                 # Press Q on keyboard to  exit
                 if cv2.waitKey(25) & 0xFF == ord('q'):
