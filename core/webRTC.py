@@ -17,8 +17,8 @@ class WebRTCController():
     def __init__(self,address) -> None:
         # create signaling and peer connection
         self.signaling = SignalingServer(address)
-        
-        self.videoBuffer = VideoBuffer()
+        self.cond = threading.Condition()
+        self.videoBuffer = VideoBuffer(self.cond)
 
     def webRTCRecv(self):
         # run event loop
@@ -33,9 +33,11 @@ class WebRTCController():
         self.loop.run_until_complete(self.pc.close())
         
 
-    def start(self):
-        self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
-        self.recvThread.start()
+    def connect(self):
+        with self.cond:
+            self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
+            self.recvThread.start()
+            self.cond.wait()
 
     def close(self):
         self.__running = False

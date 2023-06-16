@@ -51,14 +51,14 @@ class RobotClient:
 
     def showVideo(self):
         if not self.webRTCConnect:
-            self.__connectWebRTC()
+            self.connectWebRTC()
         self.videoShow = VideoShow(self.webRTCUser.videoBuffer)
         self.videoShow.start()
     
 
     def get_frame(self):
         if not self.webRTCConnect:
-            self.__connectWebRTC()
+            self.connectWebRTC()
         return self.webRTCUser.getFrame()
         
     def home(self):

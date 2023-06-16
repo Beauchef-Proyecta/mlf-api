@@ -4,15 +4,19 @@ import time
 
 
 class VideoBuffer():
-    def __init__(self) -> None:
+    def __init__(self, cond) -> None:
         self.started = False
         self.frame = None
+        self.initCond = cond
 
     async def addTrack(self, track):
         self.track = track
 
     async def start(self):
         self.started = True
+        self.frame = await self.track.recv()
+        with self.initCond:
+            self.initCond.notify()
         while (self.started):
             self.frame = await self.track.recv()
     
