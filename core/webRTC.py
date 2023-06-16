@@ -13,7 +13,7 @@ import threading
 
 
 
-class WebRTCUser():
+class WebRTCController():
     def __init__(self,address) -> None:
         # create signaling and peer connection
         self.signaling = SignalingServer(address)
@@ -40,6 +40,9 @@ class WebRTCUser():
     def close(self):
         self.__running = False
         self.recvThread.join()
+
+    def getFrame(self):
+        return self.videoBuffer.getCurrentFrame()
         
         
     
@@ -82,5 +85,5 @@ class SimpleVideoTrack(MediaStreamTrack):
 
 if __name__ == "__main__":
     #logging.basicConfig(level=logging.DEBUG)
-    user = WebRTCUser("rainbowdash.local")
+    user = WebRTCController("rainbowdash.local")
     user.start()
