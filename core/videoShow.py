@@ -30,6 +30,10 @@ class VideoShow():
 
     def __init__(self, buffer) -> None:
         self.buffer = buffer
+        self.show = False
+
+    def isRunning(self):
+        return self.show
 
     def showLoop(self):
         # Read until video is completed
@@ -40,6 +44,7 @@ class VideoShow():
             if frame:
                 # Display the resulting frame
                 cv2.imshow('Video', frame)
+
                 # Press Q on keyboard to  exit
                 if cv2.waitKey(25) & 0xFF == ord('q'):
                     break

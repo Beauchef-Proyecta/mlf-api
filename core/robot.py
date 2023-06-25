@@ -45,11 +45,13 @@ class RobotClient:
 
     def closeWebRTC(self):
         self.webRTCUser.close()
-        #self.videoShow.stop()
+        
 
     def showVideo(self):
-        self.videoShow = VideoShow(self.webRTCUser.videoBuffer)
-        self.videoShow.start()
+        self.webRTCUser.showVideo()
+    
+    def stopVideo(self):
+        self.webRTCUser.stopVideo()
     
 
     def get_frame(self):
