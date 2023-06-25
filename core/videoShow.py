@@ -47,6 +47,7 @@ class VideoShow():
 
                 # Press Q on keyboard to  exit
                 if cv2.waitKey(25) & 0xFF == ord('q'):
+                    self.show = False
                     break
             # Break the loop
             else: 
