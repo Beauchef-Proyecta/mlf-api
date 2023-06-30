@@ -4,8 +4,8 @@ import cv2
 
 robot = RobotClient("rainbowdash.local")
 
-frame = robot.get_frame()
-cv2.imshow("frame", frame)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+robot.showVideo()
+
+time.sleep(10)
+
 robot.closeWebRTC()

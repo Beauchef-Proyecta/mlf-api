@@ -24,6 +24,8 @@ class VideoBuffer():
         self.started = False
     
     def getCurrentFrame(self):
+        if self.frame is None:
+            return None
         return self.frame.to_ndarray(format="bgr24")
 
 class VideoShow():
@@ -41,7 +43,7 @@ class VideoShow():
         while (self.show):
             # Capture frame-by-frame
             frame = self.buffer.getCurrentFrame()
-            if frame:
+            if frame is not None:
                 # Display the resulting frame
                 cv2.imshow('Video', frame)
 
