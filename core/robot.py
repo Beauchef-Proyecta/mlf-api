@@ -47,8 +47,8 @@ class RobotClient:
         self.webRTCUser.close()
         
 
-    def showVideo(self):
-        self.webRTCUser.showVideo()
+    def showVideo(self, process= lambda frame : (frame, None)):
+        self.webRTCUser.showVideo(process)
     
     def stopVideo(self):
         self.webRTCUser.stopVideo()

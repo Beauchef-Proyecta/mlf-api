@@ -54,11 +54,11 @@ class WebRTCController():
             self.connect()
         return self.videoBuffer.getCurrentFrame()
 
-    def showVideo(self):
+    def showVideo(self, process):
         if not self.connected:
             self.connect()
         if not self.videoShow.isRunning():
-            self.videoShow.start()
+            self.videoShow.start(process)
         else:
             print("Already showing video")
     

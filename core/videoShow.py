@@ -33,6 +33,7 @@ class VideoShow():
     def __init__(self, buffer) -> None:
         self.buffer = buffer
         self.show = False
+        self.args = []
 
     def isRunning(self):
         return self.show
@@ -45,6 +46,7 @@ class VideoShow():
             frame = self.buffer.getCurrentFrame()
             if frame is not None:
                 # Display the resulting frame
+                frame, self.args = self.process(frame)
                 cv2.imshow('Video', frame)
 
                 # Press Q on keyboard to  exit
@@ -58,7 +60,8 @@ class VideoShow():
         # Closes all the frames
         cv2.destroyAllWindows()
 
-    def start(self):
+    def start(self, process):
+        self.process = process
         self.cameraThread = threading.Thread(target=self.showLoop, args=())
         self.cameraThread.start()
     
