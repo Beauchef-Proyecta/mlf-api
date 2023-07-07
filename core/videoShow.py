@@ -1,3 +1,4 @@
+import asyncio
 import cv2
 import threading
 import time
@@ -14,14 +15,16 @@ class VideoBuffer():
 
     async def start(self):
         self.started = True
+        self.startTask = asyncio.current_task()
         self.frame = await self.track.recv()
         with self.initCond:
             self.initCond.notify()
         while (self.started):
             self.frame = await self.track.recv()
     
-    def stop(self):
+    async def stop(self):
         self.started = False
+        await asyncio.wait_for(self.startTask, timeout=10)
     
     def getCurrentFrame(self):
         if self.frame is None:

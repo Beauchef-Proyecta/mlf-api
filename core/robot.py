@@ -1,6 +1,6 @@
 import requests
-from webRTC import WebRTCController
-from videoShow import VideoShow
+from .webRTC import WebRTCController
+from .videoShow import VideoShow
 
 
 class RobotClient:
@@ -39,7 +39,7 @@ class RobotClient:
         url = f"{self.base_url}/set_joints"
         response = requests.get(url, params=params)
         print(response.text)
-        
+
     def set_relay_status(self, state=1, relay=1):
         params = {"state": state, "n_relay": relay}
         url = f"{self.base_url}/set_relay_status"

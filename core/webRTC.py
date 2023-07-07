@@ -30,8 +30,7 @@ class WebRTCController():
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(self.run())
 
-        print("Stop webRTC")
-        self.videoBuffer.stop()
+        print("Ending WebRTC connection")
         self.loop.run_until_complete(self.pc.close())
         
 
@@ -41,7 +40,7 @@ class WebRTCController():
             self.recvThread.start()
             self.cond.wait()
         self.connected = True
-        print("WebRTC connection finished")
+        print("WebRTC connection ready")
 
     def close(self):
         if self.videoShow.isRunning():
@@ -82,9 +81,9 @@ class WebRTCController():
         await self.pc.setLocalDescription(offer)
         response = await self.signaling.postOffer(self.pc.localDescription)
         await self.pc.setRemoteDescription(response)
-        print("WebRTC ready")
         while self.__running:
             await asyncio.sleep(1)
+        await self.videoBuffer.stop()
 
 
 class SimpleVideoTrack(MediaStreamTrack):
