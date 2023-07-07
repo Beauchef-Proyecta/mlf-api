@@ -41,9 +41,17 @@ class WebRTCController():
         with self.cond:
             self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
             self.recvThread.start()
-            self.cond.wait()
-        self.connected = True
-        print("WebRTC connection ready")
+            value = self.cond.wait(10)
+            if value:
+                if self.videoBuffer.isRunning():
+                    self.connected = True
+                    print("WebRTC connection ready")
+                else:
+                    print("Connection Failed")
+            else:
+                print("No video to recieve")
+            return self.connected
+        
 
     def close(self):
         if self.videoShow.isRunning():
@@ -53,12 +61,14 @@ class WebRTCController():
 
     def getFrame(self):
         if not self.connected:
-            self.connect()
+            if not self.connect():
+                return
         return self.videoBuffer.getCurrentFrame()
 
     def showVideo(self, process):
         if not self.connected:
-            self.connect()
+            if not self.connect():
+                return
         if not self.videoShow.isRunning():
             self.videoShow.start(process)
         else:
@@ -80,7 +90,6 @@ class WebRTCController():
             
         # send offer
         try: 
-                
             self.pc.addTransceiver('video', direction = 'recvonly')
             offer = await self.pc.createOffer()
             await self.pc.setLocalDescription(offer)

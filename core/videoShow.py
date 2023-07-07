@@ -12,6 +12,10 @@ class VideoBuffer():
 
     async def addTrack(self, track):
         self.track = track
+    
+    def isRunning(self):
+
+        return self.started 
 
     async def start(self):
         print("start")
