@@ -23,6 +23,9 @@ robot = RobotClient("rainbowdash.local")
 
 robot.showVideo(process= onlyColor)
 
-time.sleep(10)
-
-robot.closeWebRTC()
+try: 
+  time.sleep(10)
+except KeyboardInterrupt:
+  print("keyboard interrupt")
+finally:
+  robot.closeWebRTC()

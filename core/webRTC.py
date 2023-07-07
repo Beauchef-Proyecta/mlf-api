@@ -25,16 +25,19 @@ class WebRTCController():
     def webRTCRecv(self):
         # run event loop
         self.pc = RTCPeerConnection(configuration=RTCConfiguration(iceServers=[]))
-        self.__running = True
+
         self.loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(self.run())
 
         print("Ending WebRTC connection")
         self.loop.run_until_complete(self.pc.close())
+        print("ended")
         
 
     def connect(self):
+        self.run_event = threading.Event()
+        self.run_event.set()
         with self.cond:
             self.recvThread = threading.Thread(target=self.webRTCRecv, args=())
             self.recvThread.start()
@@ -45,7 +48,7 @@ class WebRTCController():
     def close(self):
         if self.videoShow.isRunning():
             self.stopVideo()
-        self.__running = False
+        self.run_event.clear()
         self.recvThread.join()
 
     def getFrame(self):
@@ -76,15 +79,21 @@ class WebRTCController():
 
             
         # send offer
-        self.pc.addTransceiver('video', direction = 'recvonly')
-        offer = await self.pc.createOffer()
-        await self.pc.setLocalDescription(offer)
-        response = await self.signaling.postOffer(self.pc.localDescription)
-        await self.pc.setRemoteDescription(response)
-        while self.__running:
-            await asyncio.sleep(1)
-        await self.videoBuffer.stop()
+        try: 
+                
+            self.pc.addTransceiver('video', direction = 'recvonly')
+            offer = await self.pc.createOffer()
+            await self.pc.setLocalDescription(offer)
+            response = await self.signaling.postOffer(self.pc.localDescription)
+            await self.pc.setRemoteDescription(response)
+            while self.run_event.is_set():
+                await asyncio.sleep(1)
+            await self.videoBuffer.stop()
 
+        except:
+            print("Connection Error")
+            with self.cond:
+                self.cond.notify()
 
 class SimpleVideoTrack(MediaStreamTrack):
 
