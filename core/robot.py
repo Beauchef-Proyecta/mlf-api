@@ -2,6 +2,8 @@ import requests
 from .webRTC import WebRTCController
 from .videoShow import VideoShow
 
+from .inverse_kinematics import inverse_kinematics
+
 
 class RobotClient:
     
@@ -27,15 +29,16 @@ class RobotClient:
             self.connected = True
             print(response.text)
 
-    def move_xyz(self, x, y, z):
-        params = {"x": x, "y": y, "z": z}
-        url = f"{self.base_url}/move"
+    def move_xyz(self, x, y, z, q3=120):
+        q0, q1, q2 = inverse_kinematics(x, y, z)
+        params = {"q0": q0, "q1": q1, "q2": q2, "q3": q3}
+        url = f"{self.base_url}/set_joints"
         response = requests.get(url, params=params)
         print(response.text)
         
 
     def set_joints(self, q0=0, q1=0, q2=90, q3=120):
-        params = {"q0": q0, "q1": q1, "q2": q2}
+        params = {"q0": q0, "q1": q1, "q2": q2, "q3": q3}
         url = f"{self.base_url}/set_joints"
         response = requests.get(url, params=params)
         print(response.text)
