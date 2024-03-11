@@ -1,4 +1,4 @@
-from core.robot import RobotClient
+from mlf_api import RobotClient
 import time
 import cv2
 import numpy as np
