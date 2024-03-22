@@ -4,7 +4,7 @@ def inverse_kinematics(X=150,Y=0,Z=60, eff_off_x=65, eff_off_z=0):
 
     link_lengths = [55, 39, 135, 147, 66.3]
     offset_z = 100
-    zb = Z - offset_z - eff_off_z
+    zb = Z - offset_z + eff_off_z
     l1 = link_lengths[2]
     l2 = link_lengths[3]
     
