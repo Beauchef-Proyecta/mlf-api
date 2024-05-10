@@ -30,8 +30,9 @@ class RobotClient:
             self.connected = True
             print(response.text)
 
-    def move_xyz(self, x, y, z, q3=120):
-        q0, q1, q2 = inverse_kinematics(x, y, z)
+    def move_xyz(self, x, y, z, eff_off = [56, 0, 0], q3=120):
+        eff_off_x, eff_off_y, eff_off_z = eff_off
+        q0, q1, q2 = inverse_kinematics(x, y, z, eff_off_x, eff_off_z)
         params = {"q0": q0, "q1": q1, "q2": q2, "q3": q3}
         url = f"{self.base_url}/set_joints"
         response = requests.get(url, params=params)
