@@ -1,4 +1,5 @@
 import requests
+import json
 from .webRTC import WebRTCController
 from .videoShow import VideoShow
 
@@ -64,6 +65,11 @@ class RobotClient:
         response = requests.get(url, params=params)
         print(response.text)
     
+    def get_weight(self):
+        url = f"{self.base_url}/get_weight"
+        response = requests.get(url)
+        json_data = json.loads(response.text)
+        return json_data['weight']
 
     def closeWebRTC(self):
         self.webRTCUser.close()
