@@ -71,7 +71,7 @@ class RobotClient:
         url = f"{self.base_url}/get_weight"
         response = self.session.get(url)
         json_data = json.loads(response.text)
-        return json_data['weight']
+        return json_data['weight'][0]
 
     def closeWebRTC(self):
         self.webRTCUser.close()
