@@ -12,8 +12,13 @@ class VideoBuffer():
 
     async def addTrack(self, track):
         self.track = track
+    
+    def isRunning(self):
+
+        return self.started 
 
     async def start(self):
+        print("start")
         self.started = True
         self.startTask = asyncio.current_task()
         self.frame = await self.track.recv()
@@ -35,16 +40,16 @@ class VideoShow():
 
     def __init__(self, buffer) -> None:
         self.buffer = buffer
-        self.show = False
+        self.show = self.show = threading.Event()
         self.args = []
 
     def isRunning(self):
-        return self.show
+        if self.show:
+            return self.show.is_set()
 
     def showLoop(self):
         # Read until video is completed
-        self.show = True
-        while (self.show):
+        while (self.show.is_set()):
             # Capture frame-by-frame
             frame = self.buffer.getCurrentFrame()
             if frame is not None:
@@ -54,7 +59,7 @@ class VideoShow():
 
                 # Press Q on keyboard to  exit
                 if cv2.waitKey(25) & 0xFF == ord('q'):
-                    self.show = False
+                    self.show.clear()
                     break
             # Break the loop
             else: 
@@ -64,11 +69,12 @@ class VideoShow():
         cv2.destroyAllWindows()
 
     def start(self, process):
+        self.show.set()
         self.process = process
         self.cameraThread = threading.Thread(target=self.showLoop, args=())
         self.cameraThread.start()
     
     def stop(self):
-        self.show = False
+        self.show.clear()
         self.cameraThread.join()
         

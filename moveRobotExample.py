@@ -1,4 +1,4 @@
-from core.robot import RobotClient
+from mlf_api import RobotClient
 import time
 
 robot = RobotClient("rainbowdash.local")
