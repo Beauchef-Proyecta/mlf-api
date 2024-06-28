@@ -77,7 +77,7 @@ class RobotClient:
         url = f"{self.base_url}/get_distance"
         response = self.session.get(url)
         json_data = json.loads(response.text)
-        return json_data['distance'][0]
+        return json_data['distance']
 
     def closeWebRTC(self):
         self.webRTCUser.close()
