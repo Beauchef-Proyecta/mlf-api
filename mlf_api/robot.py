@@ -1,5 +1,7 @@
 import requests
 import json
+import numpy as np
+import cv2
 from .webRTC import WebRTCController
 from .videoShow import VideoShow
 
@@ -92,6 +94,16 @@ class RobotClient:
 
     def get_frame(self):
         return self.webRTCUser.getFrame()
+    
+    def capture(self):
+        url = f"{self.base_url}/capture"
+        response = self.session.get(url)
+        # Convert the byte data to a numpy array
+        image_data = np.frombuffer(response.content, np.uint8)
+        
+        # Decode the image from the numpy array
+        image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
+        return image
         
     def home(self):
         self.set_joints(q0=self.HOME_Q0, q1=self.HOME_Q1, q2=self.HOME_Q2)
