@@ -7,19 +7,23 @@ from .inverse_kinematics import inverse_kinematics
 
 
 class RobotClient:
+
+    robot_static_ips = {'applejack': "101", 'twilight': "102", "pinkiepie": "103", "fluttershy": "104", "rainbowdash": "105", "spike" : "106", "celestia": "107", "spirit": "108"}
     
-    HOME_Q0 = 0
-    HOME_Q1 = 0
+    HOME_Q0 = 90
+    HOME_Q1 = 90
     HOME_Q2 = 90
 
     def __init__(self, address, port=5000, portVideo=8080):
         self.address = address
+        if self.address in self.robot_static_ips:
+            self.address = "10.200.144." + self.robot_static_ips[self.address]
+        print(self.address)
         self.port = port
-        self.base_url = f"http://{address}:{port}"
+        self.base_url = f"http://{self.address}:{port}"
         self.connected = False
         self.session = requests.Session()
         self.webRTCUser = WebRTCController(self.address)
-
     def connect(self):
         if self.connected:
             print("already connected :)")
@@ -40,7 +44,7 @@ class RobotClient:
         print(response.text)
         
 
-    def set_joints(self, q0=0, q1=0, q2=90, q3=120):
+    def set_joints(self, q0=90, q1=90, q2=90, q3=120):
         params = {"q0": q0, "q1": q1, "q2": q2, "q3": q3}
         url = f"{self.base_url}/set_joints"
         response = self.session.get(url, params=params)
