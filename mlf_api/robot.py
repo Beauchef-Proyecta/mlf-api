@@ -77,7 +77,7 @@ class RobotClient:
         url = f"{self.base_url}/get_weight"
         response = self.session.get(url)
         json_data = json.loads(response.text)
-        return json_data['weight'][0]
+        return json_data['weight']
     
     def get_distance(self):
         url = f"{self.base_url}/get_distance"
